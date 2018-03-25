@@ -1,0 +1,73 @@
+#root{
+  width: 100%;
+}
+
+img {
+  max-height: 100px;
+  max-width: 100px;
+}
+
+.userlist {
+  display: grid;
+  grid-template-columns: 20% 20% 20% 20% 20%;
+  align-items: center;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  font-family: Courier;
+}
+
+h1 {
+  color: rgb(3, 102, 214);
+}
+
+.numFollow{
+  background-color: rgba(27, 31, 35, 0.08);
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  box-sizing: border-box;
+  color: rgb(68, 77, 86);
+  padding-bottom: 2px;
+  padding-right: 5px;
+  padding-left: 5px;
+  padding-top: 2px;
+}
+
+.search{
+  background-color: rgb(36, 41, 46);
+  color: rgba(255, 255, 255, 0.75);
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 56px;
+}
+
+input {
+  height: 30px;
+  font-size: 13px;
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.fetch{
+  background-color: rgb(230, 235, 241);
+  background-image: linear-gradient(-180deg, #f0f3f6 0%, #e6ebf1 90%);
+  padding: 3px 10px;
+  width: 70px;
+  height: 30px;
+}

@@ -1,18 +1,42 @@
 const axios = require('axios');
 
 const parseFollowers = (data) => {
-  console.log(data.length);
+  const results = [];
   data.forEach((obj) => {
-    console.log(obj.login, obj.avatar_url);
+    results.push(obj.avatar_url);
   });
+
+  return results;
 };
 
 // limit is 100 followers per request
 const fetchFollowers = (username, num) => {
-  axios.get(`https://api.github.com/users/${username}/followers?page=${num}`)
+  return axios.get(`https://api.github.com/users/${username}/followers?page=${num}`)
     .then(res => parseFollowers(res.data))
     .catch(err => console.log(err));
 };
 
-fetchFollowers('StephenGrider', 1);
-fetchFollowers('StephenGrider', 2);
+const fetchUser = (username) => {
+  return axios.get(`https://api.github.com/users/${username}`)
+    .then((userRes) => {
+      return fetchFollowers(username, 1).
+        then((followerRes) => {
+          return {
+            username: userRes.data.login,
+            numFollow: userRes.data.followers,
+            followers: followerRes,
+            status: userRes.data.status
+          };
+        });
+     }).catch((err) => {
+       return {
+         username: "",
+         numFollow: "",
+         followers: [],
+         status: err.response.status
+       };
+     });
+};
+
+
+module.exports = {fetchFollowers, fetchUser};
