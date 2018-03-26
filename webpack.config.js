@@ -4,7 +4,7 @@ module.exports = {
   entry: './components/root.jsx',
   mode: 'development',
   output: {
-    path: path.resolve(__dirname),
+    path: path.resolve(__dirname + '/public'),
     filename: "bundle.js"
   },
   module: {

@@ -38,7 +38,14 @@ class App extends React.Component {
       fetchUser(this.state.input).then(res => {
         if (res.status === 404) {
           this.setState({
-            name: "User Not Found"
+            name: "User Not Found",
+            bio: "",
+            avatar: "",
+            username: "",
+            numFollow: "",
+            followers: [],
+            status: res.status,
+            input: ""
           });
         } else {
           this.setState({
