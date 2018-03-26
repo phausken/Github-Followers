@@ -22,6 +22,9 @@ const fetchUser = (username) => {
       return fetchFollowers(username, 1).
         then((followerRes) => {
           return {
+            name: userRes.data.name,
+            bio: userRes.data.bio,
+            avatar: userRes.data.avatar_url,
             username: userRes.data.login,
             numFollow: userRes.data.followers,
             followers: followerRes,

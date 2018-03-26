@@ -1,26 +1,76 @@
-#root{
+body {
+  height: 100vh;
+  width: 100vw;
+  margin: 0px;
+}
+
+#root {
+  width: 100%;
+  height: 100%;
+}
+
+.app {
   width: 100%;
 }
 
-img {
-  max-height: 100px;
-  max-width: 100px;
+.userlist > img {
+  max-height: 75px;
+  max-width: 75px;
 }
 
 .userlist {
+  margin-top: 8px;
   display: grid;
-  grid-template-columns: 20% 20% 20% 20% 20%;
+  grid-template-columns: 10% 10% 10% 10% 10% 10% 10% 10% 10% 10%;
   align-items: center;
+}
+
+.main{
+  display: flex;
+  margin-top: 24px;
+  margin-left: 164px;
+  margin-right: 164px;
+  max-width: 1012px;
+  padding-left: 8px;
 }
 
 body {
   display: flex;
   justify-content: center;
-  font-family: Courier;
+  font-family: 'Noto Sans', sans-serif;
 }
 
 h1 {
-  color: rgb(3, 102, 214);
+  font-size: 26px;
+  color: rgb(36, 41, 46);
+  font-weight: 1000;
+  padding-top: 16px;
+  margin: 0px;
+}
+
+h2 {
+  margin: 0px;
+  color: rgb(102, 102, 102);
+  font-size: 20px;
+  font-weight: 300;
+  padding-bottom: 16px;
+}
+
+h3 {
+  font-size: 14px;
+  padding-left: 8px;
+  padding-right: 8px;
+  padding-top: 16px;
+  padding-bottom: 16px;
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+
+.user-info > img {
+  height: 230px;
+  width: 230px;
+  border-radius: 6px;
+  padding-right: 16px;
 }
 
 .numFollow{
@@ -42,14 +92,45 @@ h1 {
   color: rgba(255, 255, 255, 0.75);
   width: 100%;
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   height: 56px;
 }
 
+.search > a {
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 14px;
+  padding-left: 8px;
+  padding-right: 8px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.search > a:hover {
+  color: #fff;
+}
+
+.bio {
+  color: rgb(106, 115, 125);
+  font-size: 14px;
+  word-wrap: break-word;
+}
+
 input {
+  padding-left: 8px;
   height: 30px;
+  width: 283px;
   font-size: 13px;
+  line-height: 20px;
+  background-color: rgba(255, 255, 255, 0.125);
+  border-radius: 3px;
+  border-width: 0px;
+  outline-color: rgb(255, 255, 255);
+  outline-style: none;
+  outline-width: 0px;
+  font-weight: 400;
+  color: rgb(255, 255, 255);
+  margin-left: 225px;
 }
 
 .app {
@@ -60,14 +141,6 @@ input {
 
 .header {
   display: flex;
-  flex-direction: column;
   align-items: center;
-}
-
-.fetch{
-  background-color: rgb(230, 235, 241);
-  background-image: linear-gradient(-180deg, #f0f3f6 0%, #e6ebf1 90%);
-  padding: 3px 10px;
-  width: 70px;
-  height: 30px;
+  border-bottom: rgb(209, 213, 218) solid 1px;
 }

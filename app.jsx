@@ -1,6 +1,7 @@
 import React from 'react';
 import {fetchUser, fetchFollowers} from './util';
 import UserList from './userlist';
+import UserProfile from './UserProfile';
 import Header from './header';
 
 class App extends React.Component {
@@ -8,8 +9,11 @@ class App extends React.Component {
     super();
 
     this.state = ({
+      //num will be passed in the 'get' request to Github as query param
       num: 1,
       input: '',
+      name: '',
+      avatar: '',
       username: '',
       numFollow: '',
       followers: []
@@ -27,11 +31,15 @@ class App extends React.Component {
   }
 
   handleSubmit(e){
+    // Checks to see if user is already fetched
     if(this.state.username !== this.state.input){
       e.preventDefault();
       fetchUser(this.state.input)
         .then((res) => {
           this.setState({
+            name: res.name,
+            bio: res.bio,
+            avatar: res.avatar,
             username: res.username,
             numFollow: res.numFollow,
             followers: res.followers,
@@ -48,7 +56,9 @@ class App extends React.Component {
     fetchFollowers(this.state.username, this.state.num)
       .then((res) => {
         this.setState({
+          // Add the new batch of followers to the existing array
           followers: (this.state.followers.concat(res)),
+          // Increment num by 1 to account for subsequent requests
           num: this.state.num + 1
         });
       });
@@ -61,12 +71,17 @@ class App extends React.Component {
     return (
       <div className="app">
         <div className="search">
-        <input value={this.state.input} onChange= { this.handleInput }/>
-        <button onClick={ this.handleSubmit }>Submit</button>
+          <input value={this.state.input} onChange= { this.handleInput } placeholder="Enter a username"/>
+          <a onClick={ this.handleSubmit }>Submit</a>
+          { numFollow > followers.length && <a className="fetch" onClick={ this.handleMore }>Fetch More Users</a>  }
         </div>
-        <Header username={ this.state.username } numFollow = { this.state.numFollow}/>
-        <UserList users={ this.state.followers }/>
-        { numFollow > followers.length && <button className="fetch" onClick={ this.handleMore }>Fetch More Users</button>  }
+        <div className="main">
+          <UserProfile username={ this.state.username } avatar={ this.state.avatar } name={ this.state.name } bio={ this.state.bio }/>
+          <div className="head-list">
+            <Header username={ this.state.username } numFollow = { this.state.numFollow} currentDisplay = { this.state.followers.length } />
+            <UserList users={ this.state.followers }/>
+          </div>
+        </div>
       </div>
     );
   }
