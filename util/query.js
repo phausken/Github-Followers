@@ -8,6 +8,8 @@ export const fetchFollowers =  gql`
 		id,
     login,
     bio,
+    name,
+    avatarUrl,
     followers(first: 20){
       totalCount
       nodes{
@@ -16,10 +18,8 @@ export const fetchFollowers =  gql`
         id
       }
       pageInfo{
-        startCursor
         endCursor
         hasNextPage
-        hasPreviousPage
       }
     }
   }
@@ -29,10 +29,8 @@ export const fetchFollowers =  gql`
 export const fetchMoreFollowers =  gql`
   query FindFollowers($username: String!, $after: String!){
   user(login: $username){
-		id,
-    login,
-    bio,
-    followers(first: 20, after: "Y3Vyc29yOnYyOpHOATl3dw=="){
+    id,
+    followers(first: 20, after: $after){
       totalCount
       nodes{
         avatarUrl
@@ -40,10 +38,8 @@ export const fetchMoreFollowers =  gql`
         id
       }
       pageInfo{
-        startCursor
         endCursor
         hasNextPage
-        hasPreviousPage
       }
     }
   }
