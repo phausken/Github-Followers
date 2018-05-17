@@ -1,23 +1,30 @@
+//This app used to use RESTful conventions. I've left util/util.js to demonstrate
+//how it used to fetch data.
+
 import React from "react";
-//util.js contains all ajax request functions
-import { fetchUser, fetchFollowers } from "../util/util";
+//import { fetchUser, fetchFollowers } from "../util/util";
 import UserList from "./userlist";
 import UserProfile from "./UserProfile";
 import Header from "./header";
+import { ApolloConsumer } from "react-apollo";
+import { fetchFollowers, fetchMoreFollowers } from "../util/query.js";
 
 class App extends React.Component {
   constructor() {
     super();
 
     this.state = {
-      //num will be passed in the 'get' request to Github as query param
-      num: 1,
+      //after is a string used by Github's API to aid in pagination
+      after: "",
       input: "",
       name: "",
       avatar: "",
       username: "",
       numFollow: "",
-      followers: []
+      followers: [],
+      hasNext: false,
+      bio: "",
+      error: false
     };
 
     this.handleInput = this.handleInput.bind(this);
@@ -31,49 +38,59 @@ class App extends React.Component {
     });
   }
 
-  handleSubmit(e) {
+  handleSubmit(client, e) {
+    e.preventDefault();
     // Checks to see if user is already fetched
     if (this.state.username !== this.state.input) {
-      e.preventDefault();
-      fetchUser(this.state.input).then(res => {
-        if (res.status === 404) {
+      client
+        .query({
+          query: fetchFollowers,
+          variables: {
+            username: this.state.input
+          }
+        })
+        .then(res => {
+          console.log(res);
+          const { bio, followers, login, name, avatarUrl } = res.data.user;
+          const { nodes, pageInfo, totalCount } = followers;
+
           this.setState({
-            name: "User Not Found",
-            bio: "",
-            avatar: "",
-            username: "",
-            numFollow: "",
-            followers: [],
-            status: res.status,
-            input: ""
+            after: followers.pageInfo.endCursor,
+            hasNext: followers.pageInfo.hasNextPage,
+            name,
+            avatar: avatarUrl,
+            numFollow: followers.totalCount,
+            followers: followers.nodes,
+            username: login,
+            bio,
+            error: false
           });
-        } else {
-          this.setState({
-            name: res.name,
-            bio: res.bio,
-            avatar: res.avatar,
-            username: res.username,
-            numFollow: res.numFollow,
-            followers: res.followers,
-            num: 2,
-            status: res.status,
-            input: ""
-          });
-        }
-      });
+        }).catch(err => this.setState({error: true}));
     }
   }
 
-  handleMore(e) {
-    e.preventDefault();
-    fetchFollowers(this.state.username, this.state.num).then(res => {
-      this.setState({
-        // Add the new batch of followers to the existing array
-        followers: this.state.followers.concat(res),
-        // Increment num by 1 to account for subsequent requests
-        num: this.state.num + 1
-      });
-    });
+  handleMore(client) {
+    const { after, username } = this.state;
+
+    if (this.state.hasNext) {
+      client
+        .query({
+          query: fetchMoreFollowers,
+          variables: {
+            username,
+            after
+          }
+        })
+        .then(res => {
+          const { nodes, pageInfo } = res.data.user.followers;
+
+          this.setState({
+            followers: this.state.followers.concat(nodes),
+            after: pageInfo.endCursor,
+            hasNext: pageInfo.hasNextPage
+          });
+        });
+    }
   }
 
   render() {
@@ -81,37 +98,49 @@ class App extends React.Component {
     const followers = this.state.followers;
     const numFollow = this.state.numFollow;
     return (
-      <div className="app">
-        <div className="search">
-          <input
-            value={this.state.input}
-            onChange={this.handleInput}
-            placeholder="Enter a Github username"
-          />
-          <a onClick={this.handleSubmit}>Submit</a>
-          {numFollow > followers.length && (
-            <a className="fetch" onClick={this.handleMore}>
-              Fetch More Users
-            </a>
-          )}
-        </div>
-        <div className="main">
-          <UserProfile
-            username={this.state.username}
-            avatar={this.state.avatar}
-            name={this.state.name}
-            bio={this.state.bio}
-          />
-          <div className="head-list">
-            <Header
-              username={this.state.username}
-              numFollow={this.state.numFollow}
-              currentDisplay={this.state.followers.length}
-            />
-            <UserList users={this.state.followers} />
+      <ApolloConsumer>
+        {client => (
+          <div className="app">
+            <form
+              className="search"
+              onSubmit={e => this.handleSubmit(client, e)}
+            >
+              <input
+                className="search-bar"
+                value={this.state.input}
+                onChange={this.handleInput}
+                placeholder="Enter a Github username"
+              />
+              <input type="submit" value="Submit" className="submit-button" />
+              {numFollow > followers.length && (
+                <button
+                  className="submit-button"
+                  onClick={() => this.handleMore(client)}
+                >
+                  Fetch More Users
+                </button>
+              )}
+              {this.state.error && <p className="error">Username not found</p>}
+            </form>
+            <div className="main">
+              <UserProfile
+                username={this.state.username}
+                avatar={this.state.avatar}
+                name={this.state.name}
+                bio={this.state.bio}
+              />
+              <div className="head-list">
+                <Header
+                  username={this.state.username}
+                  numFollow={this.state.numFollow}
+                  currentDisplay={this.state.followers.length}
+                />
+                <UserList users={this.state.followers} />
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
+        )}
+      </ApolloConsumer>
     );
   }
 }

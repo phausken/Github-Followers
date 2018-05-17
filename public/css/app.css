@@ -116,7 +116,7 @@ h3 {
   word-wrap: break-word;
 }
 
-input {
+.search-bar {
   padding-left: 8px;
   height: 30px;
   width: 283px;
@@ -143,4 +143,22 @@ input {
   display: flex;
   align-items: center;
   border-bottom: rgb(209, 213, 218) solid 1px;
+}
+
+.submit-button {
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 14px;
+  padding-left: 8px;
+  padding-right: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  background-color: rgb(36, 41, 46);
+  border: 0px;
+  outline-style: none;
+}
+
+.error {
+  margin-left: 20px;
+  font-size: 14px;
+  color: red;
 }
